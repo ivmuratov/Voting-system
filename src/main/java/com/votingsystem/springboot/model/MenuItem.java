@@ -45,4 +45,10 @@ public class MenuItem extends BaseEntity {
     @JsonBackReference(value = "menu")
     @ToString.Exclude
     private Restaurant restaurant;
+
+    public MenuItem(Integer id, String name, Long price) {
+        super(id);
+        this.name = name;
+        this.price = price;
+    }
 }

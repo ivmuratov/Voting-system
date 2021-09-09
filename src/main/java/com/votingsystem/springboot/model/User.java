@@ -11,6 +11,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.EnumSet;
 import java.util.Set;
 
 @Getter
@@ -51,4 +53,12 @@ public class User extends BaseEntity {
     @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Role> roles;
+
+    public User(Integer id, String name, String email, String password, Collection<Role> roles) {
+        super(id);
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.roles = EnumSet.copyOf(roles);
+    }
 }

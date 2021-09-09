@@ -42,4 +42,9 @@ public class Restaurant extends BaseEntity {
     @JsonManagedReference(value = "menu")
     @ToString.Exclude
     private List<MenuItem> menu;
+
+    public Restaurant(Integer id, String name) {
+        super(id);
+        this.name = name;
+    }
 }

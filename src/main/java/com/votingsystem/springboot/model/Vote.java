@@ -30,7 +30,13 @@ public class Vote extends BaseEntity {
     @ToString.Exclude
     private Restaurant restaurant;
 
-    public Vote(int userId, Restaurant restaurant) {
+    public Vote(Integer id, Integer userId, Restaurant restaurant) {
+        super(id);
+        this.userId = userId;
+        this.restaurant = restaurant;
+    }
+
+    public Vote(Integer userId, Restaurant restaurant) {
         this.userId = userId;
         this.restaurant = restaurant;
     }

@@ -10,9 +10,11 @@ VALUES ('Menu Item for Restaurant 1', 50000, 1),
 
 INSERT INTO USERS (NAME, EMAIL, PASSWORD)
 VALUES ('user', 'user@email.com', '{noop}user'),
-       ('admin', 'admin@email.com', '{noop}admin');
+       ('admin', 'admin@email.com', '{noop}admin'),
+       ('voted_user', 'voted.user@email.com', '{noop}voted_user');
 
 INSERT INTO USER_ROLE(ROLE, USER_ID)
 VALUES ('USER', 1),
        ('ADMIN', 2),
-       ('USER', 2);
+       ('USER', 2),
+       ('USER', 3);
