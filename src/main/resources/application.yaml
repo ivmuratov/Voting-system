@@ -1,1 +1,21 @@
-
+spring:
+  h2.console.enabled: true
+  datasource:
+    url: jdbc:h2:mem:votingsystem
+    #    tcp: jdbc:h2:tcp://localhost:9092/mem:votingsystem
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    defer-datasource-initialization: true
+    show-sql: true
+    open-in-view: false
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create
+    properties.hibernate:
+      format_sql: true
+      dialect: org.hibernate.dialect.H2Dialect
+      jdbc.batch_size: 20
+      default_batch_fetch_size: 20
+      id.new_generator_mappings: false
