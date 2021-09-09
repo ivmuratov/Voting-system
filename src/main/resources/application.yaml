@@ -1,5 +1,8 @@
 spring:
   h2.console.enabled: true
+  data.rest:
+    base-path: /api
+    return-body-on-create: true
   datasource:
     url: jdbc:h2:mem:votingsystem
     #    tcp: jdbc:h2:tcp://localhost:9092/mem:votingsystem
@@ -19,3 +22,13 @@ spring:
       jdbc.batch_size: 20
       default_batch_fetch_size: 20
       id.new_generator_mappings: false
+
+logging:
+  level:
+    root: WARN
+    com.votingsystem.springboot: DEBUG
+    org:
+      hibernate.SQLQuery: DEBUG
+      hibernate: ERROR
+      springframework:
+        web: DEBUG
