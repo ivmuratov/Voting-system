@@ -1,4 +1,4 @@
-package com.votingsystem.springboot.web.exception;
+package com.votingsystem.springboot.util.exception;
 
 import lombok.Getter;
 import org.springframework.boot.web.error.ErrorAttributeOptions;

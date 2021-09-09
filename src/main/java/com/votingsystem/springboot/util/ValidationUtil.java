@@ -1,8 +1,9 @@
 package com.votingsystem.springboot.util;
 
 import com.votingsystem.springboot.model.BaseEntity;
-import com.votingsystem.springboot.web.exception.IllegalRequestDataException;
-import com.votingsystem.springboot.web.exception.NotFoundException;
+import com.votingsystem.springboot.repository.RestaurantRepository;
+import com.votingsystem.springboot.util.exception.IllegalRequestDataException;
+import com.votingsystem.springboot.util.exception.NotFoundException;
 
 public class ValidationUtil {
     public static void checkNew(BaseEntity entity) {
@@ -29,5 +30,11 @@ public class ValidationUtil {
     public static <T> T checkNotFoundWithId(T object, int id) {
         checkNotFoundWithId(object != null, id);
         return object;
+    }
+
+    public static void checkNotFound(RestaurantRepository rp, int id) {
+        if (!rp.existsById(id)) {
+            throw new NotFoundException("Not found entity with id=" + id);
+        }
     }
 }
