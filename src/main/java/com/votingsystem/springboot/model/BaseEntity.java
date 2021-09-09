@@ -1,16 +1,15 @@
 package com.votingsystem.springboot.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.util.ProxyUtils;
 import org.springframework.util.Assert;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 
 @MappedSuperclass
+@Access(AccessType.FIELD)
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -22,6 +21,7 @@ public abstract class BaseEntity implements Persistable<Integer> {
     protected Integer id;
 
     @Override
+    @JsonIgnore
     public boolean isNew() {
         return id == null;
     }

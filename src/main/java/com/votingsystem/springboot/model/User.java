@@ -1,5 +1,6 @@
 package com.votingsystem.springboot.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -21,6 +22,7 @@ import java.util.Set;
 @Table(name = "users")
 public class User extends BaseEntity {
     @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @NotNull
     private LocalDateTime registered = LocalDateTime.now();
 
@@ -36,6 +38,7 @@ public class User extends BaseEntity {
     private String email;
 
     @Column(name = "password")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Size(max = 256)
     @ToString.Exclude
     private String password;
