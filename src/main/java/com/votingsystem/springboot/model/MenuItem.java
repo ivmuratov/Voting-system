@@ -2,6 +2,7 @@ package com.votingsystem.springboot.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -24,21 +25,25 @@ import java.time.LocalDate;
         @UniqueConstraint(columnNames = {"restaurant_id", "registered"}, name = "menu_per_day_idx")
 })
 public class MenuItem extends BaseEntity {
+    @Schema(description = "Date of registered", accessMode = Schema.AccessMode.READ_ONLY)
     @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @NotNull
     private LocalDate registered = LocalDate.now();
 
+    @Schema(description = "Name menu item", example = "New menu item")
     @Column(name = "name", nullable = false)
     @NotBlank
     @Size(max = 120)
     private String name;
 
+    @Schema(description = "Menu item price in cents", example = "15000")
     @Column(name = "price", nullable = false)
     @NotNull
     @Range(min = 10000L, max = 1_000_000L)
     private Long price;
 
+    @Schema(hidden = true)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)

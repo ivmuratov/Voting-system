@@ -1,6 +1,7 @@
 package com.votingsystem.springboot.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.util.ProxyUtils;
@@ -16,6 +17,7 @@ import javax.persistence.*;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public abstract class BaseEntity implements Persistable<Integer> {
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;

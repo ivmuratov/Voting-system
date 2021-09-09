@@ -14,8 +14,4 @@ import java.util.Optional;
 public interface VoteRepository extends JpaRepository<Vote, Integer> {
     @Query("SELECT v FROM Vote v WHERE v.userId=?1 AND v.votingDate=?2")
     Optional<Vote> get(int userId, LocalDate date);
-
-    @Transactional
-    @Query("DELETE FROM Vote v WHERE v.id=?1")
-    void deleteById(int id);
 }

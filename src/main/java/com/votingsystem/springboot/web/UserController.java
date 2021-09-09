@@ -3,6 +3,8 @@ package com.votingsystem.springboot.web;
 import com.votingsystem.springboot.model.User;
 import com.votingsystem.springboot.repository.UserRepository;
 import com.votingsystem.springboot.util.ValidationUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +20,16 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping(UserController.URL)
+@Tag(name = "User Controller", description = "Management users")
 public class UserController {
     public static final String URL = "/api/admin/users";
 
     private final UserRepository repository;
 
+    @Operation(
+            summary = "Get all users",
+            description = "Allows you to get all users"
+    )
     @GetMapping
     public List<User> getAll() {
         List<User> userList = repository.findAll();
@@ -30,6 +37,10 @@ public class UserController {
         return userList;
     }
 
+    @Operation(
+            summary = "Get user",
+            description = "Allows you to get the selected user by id"
+    )
     @GetMapping("/{id}")
     public User get(@PathVariable int id) {
         User user = repository.findById(id).orElseThrow();
@@ -37,6 +48,10 @@ public class UserController {
         return user;
     }
 
+    @Operation(
+            summary = "Get user by email",
+            description = "Allows you to get the selected user by email"
+    )
     @GetMapping("/by-email")
     public User getByEmail(String email) {
         User user = repository.findByEmailIgnoreCase(email).orElseThrow();
@@ -44,12 +59,20 @@ public class UserController {
         return user;
     }
 
+    @Operation(
+            summary = "Delete restaurant",
+            description = "Allows you to delete the selected user by id"
+    )
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) {
         ValidationUtil.checkNotFoundWithId(repository.deleteById(id) != 0, id);
         log.info("delete user id={}", id);
     }
 
+    @Operation(
+            summary = "Update restaurant",
+            description = "Allows you to update the selected user by id"
+    )
     @PutMapping("/{id}")
     @Transactional
     public void update(@Valid @RequestBody User user, @PathVariable int id) {
@@ -58,6 +81,10 @@ public class UserController {
         log.info("update {}", user);
     }
 
+    @Operation(
+            summary = "Create user",
+            description = "Allows you to create a user"
+    )
     @PostMapping
     @Transactional
     public ResponseEntity<User> create(@Valid @RequestBody User user) {

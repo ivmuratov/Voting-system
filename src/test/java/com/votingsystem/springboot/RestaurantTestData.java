@@ -49,4 +49,3 @@ public class RestaurantTestData {
         return voted;
     }
 }
-
