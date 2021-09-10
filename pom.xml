@@ -10,10 +10,10 @@
     </parent>
     <groupId>com.votingsystem</groupId>
     <artifactId>springboot</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>war</packaging>
-    <name>voting-system</name>
-    <description>voting-system</description>
+    <name>Voting system</name>
+    <description>Voting system on Spring Boot</description>
 
     <properties>
         <java.version>16</java.version>
