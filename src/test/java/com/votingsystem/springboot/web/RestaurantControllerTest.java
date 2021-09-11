@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.util.NestedServletException;
 
+import static com.votingsystem.springboot.UserTestData.votedUser;
 import static com.votingsystem.springboot.util.DateTimeUtil.isTimeToCancelVote;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -114,7 +115,7 @@ public class RestaurantControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = UserTestData.VOTED_USER_MAIL)
     void cancelVote() throws Exception {
-        voteRepo.save(new Vote(UserTestData.VOTED_USER_ID, RestaurantTestData.restaurant3));
+        voteRepo.save(new Vote(votedUser, RestaurantTestData.restaurant3));
         if (isTimeToCancelVote()) {
             doCancelVote();
         } else {

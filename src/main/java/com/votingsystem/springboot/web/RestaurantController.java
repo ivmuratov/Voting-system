@@ -4,10 +4,8 @@ import com.votingsystem.springboot.AuthUser;
 import com.votingsystem.springboot.model.Restaurant;
 import com.votingsystem.springboot.model.User;
 import com.votingsystem.springboot.model.Vote;
-import com.votingsystem.springboot.model.VotingHistory;
 import com.votingsystem.springboot.repository.RestaurantRepository;
 import com.votingsystem.springboot.repository.VoteRepository;
-import com.votingsystem.springboot.repository.VotingHistoryRepository;
 import com.votingsystem.springboot.util.ValidationUtil;
 import com.votingsystem.springboot.util.exception.VoteException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,8 +24,6 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.votingsystem.springboot.model.TransactionType.CANCEL_VOTE;
-import static com.votingsystem.springboot.model.TransactionType.VOTE;
 import static com.votingsystem.springboot.util.DateTimeUtil.isTimeToCancelVote;
 
 @Slf4j
@@ -39,8 +35,6 @@ public class RestaurantController {
     public static final String URL = "/api/restaurants";
 
     private final RestaurantRepository repository;
-
-    private final VotingHistoryRepository votingHistoryRepo;
 
     private final VoteRepository voteRepo;
 
@@ -131,8 +125,7 @@ public class RestaurantController {
     public void doVote(@PathVariable(name = "restaurantId") int id, @AuthenticationPrincipal AuthUser authUser) {
         User user = authUser.getUser();
         Restaurant restaurant = repository.getById(id);
-        voteRepo.save(new Vote(user.id(), restaurant));
-        votingHistoryRepo.save(new VotingHistory(VOTE, user, restaurant));
+        voteRepo.save(new Vote(user, restaurant));
         log.info("{} voted for {} ", user, restaurant);
     }
 
@@ -151,7 +144,6 @@ public class RestaurantController {
         Vote vote = voteRepo.get(user.id(), LocalDate.now()).orElseThrow();
         Restaurant restaurant = vote.getRestaurant();
         voteRepo.delete(vote);
-        votingHistoryRepo.save(new VotingHistory(CANCEL_VOTE, user, restaurant));
         log.info("{} cancel vote for {}", user, restaurant);
     }
 }

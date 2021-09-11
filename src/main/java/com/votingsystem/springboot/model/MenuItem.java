@@ -12,7 +12,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -20,16 +20,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @Entity
-@Table(name = "menu_item", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"restaurant_id", "name"}, name = "menu_unique_name_idx"),
-        @UniqueConstraint(columnNames = {"restaurant_id", "registered"}, name = "menu_per_day_idx")
-})
+@Table(name = "menu_item", uniqueConstraints = {@UniqueConstraint(columnNames = {"restaurant_id", "name"}, name = "menu_unique_name_idx")})
 public class MenuItem extends BaseEntity {
     @Schema(description = "Date of registered", accessMode = Schema.AccessMode.READ_ONLY)
     @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @NotNull
-    private LocalDate registered = LocalDate.now();
+    private LocalDateTime registered = LocalDateTime.now();
 
     @Schema(description = "Name menu item", example = "New menu item")
     @Column(name = "name", nullable = false)

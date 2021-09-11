@@ -19,9 +19,12 @@ public class Vote extends BaseEntity {
     @Column(name = "voting_date", nullable = false, columnDefinition = "timestamp default now()")
     private LocalDate votingDate = LocalDate.now();
 
-    @Column(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonBackReference(value = "votes-user")
     @ToString.Exclude
-    private Integer userId;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
@@ -30,14 +33,14 @@ public class Vote extends BaseEntity {
     @ToString.Exclude
     private Restaurant restaurant;
 
-    public Vote(Integer id, Integer userId, Restaurant restaurant) {
+    public Vote(Integer id, User user, Restaurant restaurant) {
         super(id);
-        this.userId = userId;
+        this.user = user;
         this.restaurant = restaurant;
     }
 
-    public Vote(Integer userId, Restaurant restaurant) {
-        this.userId = userId;
+    public Vote(User user, Restaurant restaurant) {
+        this.user = user;
         this.restaurant = restaurant;
     }
 }
