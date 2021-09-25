@@ -9,16 +9,10 @@ import static com.votingsystem.springboot.UserTestData.user;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RestaurantTestData {
-    public static final MatcherFactory.Matcher<Restaurant> MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Restaurant.class, "registered", "menu", "votes");
-    public static final MatcherFactory.Matcher<Restaurant> WITH_MENU_MATCHER = MatcherFactory.usingAssertions(Restaurant.class,
-            (a, e) -> assertThat(a).usingRecursiveComparison()
-                    .ignoringFields("registered", "menu.restaurant", "votes", "menu.registered").isEqualTo(e),
-            (a, e) -> {
-                throw new UnsupportedOperationException();
-            });
+    public static final MatcherFactory.Matcher<Restaurant> MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Restaurant.class, "menu", "votes");
     public static final MatcherFactory.Matcher<Restaurant> WITH_VOTES_MATCHER = MatcherFactory.usingAssertions(Restaurant.class,
             (a, e) -> assertThat(a).usingRecursiveComparison()
-                    .ignoringFields("registered", "menu", "votes.restaurant", "votes.user").isEqualTo(e),
+                    .ignoringFields("menu", "votes.restaurant", "votes.user").isEqualTo(e),
             (a, e) -> {
                 throw new UnsupportedOperationException();
             });
@@ -29,12 +23,6 @@ public class RestaurantTestData {
     public static final Restaurant restaurant1 = new Restaurant(RESTAURANT_ID1, "Restaurant 1");
     public static final Restaurant restaurant2 = new Restaurant(RESTAURANT_ID2, "Restaurant 2");
     public static final Restaurant restaurant3 = new Restaurant(RESTAURANT_ID3, "Restaurant 3");
-
-    static {
-        restaurant1.setMenu(List.of(MenuItemTestData.menuItem1));
-        restaurant2.setMenu(List.of(MenuItemTestData.menuItem2));
-        restaurant3.setMenu(List.of(MenuItemTestData.menuItem3));
-    }
 
     public static Restaurant getNew() {
         return new Restaurant(null, "New Restaurant");

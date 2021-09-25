@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -37,7 +36,6 @@ public class MenuItem extends BaseEntity {
     @Schema(description = "Menu item price in cents", example = "15000")
     @Column(name = "price", nullable = false)
     @NotNull
-    @Range(min = 10000L, max = 1_000_000L)
     private Long price;
 
     @Schema(hidden = true)

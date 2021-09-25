@@ -63,18 +63,6 @@ public class RestaurantController {
     }
 
     @Operation(
-            summary = "Get restaurant with menu",
-            description = "Allows you to get the selected restaurant along with menu by id"
-    )
-    @GetMapping("/{restaurantId}/with-menu")
-    @Secured(value = {"ROLE_ADMIN", "ROLE_USER"})
-    public Restaurant getWithMenu(@PathVariable(name = "restaurantId") int id) {
-        Restaurant restaurant = repository.getMenu(id).orElseThrow();
-        log.info("get {} with menu", restaurant);
-        return restaurant;
-    }
-
-    @Operation(
             summary = "Delete restaurant",
             description = "Allows you to delete the selected restaurant by id"
     )

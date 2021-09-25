@@ -1,7 +1,9 @@
 package com.votingsystem.springboot;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.votingsystem.springboot.model.Role;
 import com.votingsystem.springboot.model.User;
+import com.votingsystem.springboot.util.JsonUtil;
 
 import java.util.List;
 
@@ -28,5 +30,9 @@ public class UserTestData {
 
     public static User getDuplicateEmail() {
         return new User(ADMIN_ID + 1, "new name", "admin@email.com", "new password", List.of(Role.USER));
+    }
+
+    public static String jsonWithPassword(User user, String passw) throws JsonProcessingException {
+        return JsonUtil.writeAdditionProps(user, "password", passw);
     }
 }

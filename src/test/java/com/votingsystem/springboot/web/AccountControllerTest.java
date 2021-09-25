@@ -2,7 +2,9 @@ package com.votingsystem.springboot.web;
 
 import com.votingsystem.springboot.model.User;
 import com.votingsystem.springboot.repository.UserRepository;
+import com.votingsystem.springboot.to.UserTo;
 import com.votingsystem.springboot.util.JsonUtil;
+import com.votingsystem.springboot.util.UserUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -23,13 +25,13 @@ class AccountControllerTest extends AbstractControllerTest {
     private UserRepository repository;
 
     @Test
-    @WithUserDetails(value = USER_MAIL)
+    @WithUserDetails(value = ADMIN_MAIL)
     void get() throws Exception {
         perform(MockMvcRequestBuilders.get(URL))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(MATCHER.contentJson(user));
+                .andExpect(MATCHER.contentJson(admin));
     }
 
     @Test
@@ -44,34 +46,35 @@ class AccountControllerTest extends AbstractControllerTest {
     void delete() throws Exception {
         perform(MockMvcRequestBuilders.delete(URL))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
         MATCHER.assertMatch(repository.findAll(), admin, votedUser);
     }
 
     @Test
     void register() throws Exception {
-        User newUser = getNew();
+        UserTo newTo = UserUtil.asTo(getNew());
+        User newUser = UserUtil.createNewFromTo(newTo);
         ResultActions action = perform(MockMvcRequestBuilders.post(URL + "/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(newUser)))
+                .content(JsonUtil.writeValue(newTo)))
                 .andDo(print())
                 .andExpect(status().isCreated());
         User registered = MATCHER.readFromJson(action);
         int newId = registered.id();
         newUser.setId(newId);
         MATCHER.assertMatch(registered, newUser);
-        MATCHER.assertMatch(registered, repository.findById(newId).orElseThrow());
+        MATCHER.assertMatch(repository.findById(newId).orElseThrow(), newUser);
     }
 
     @Test
     @WithUserDetails(value = USER_MAIL)
     void update() throws Exception {
-        User updated = getUpdated();
+        UserTo updatedTo = UserUtil.asTo(getUpdated());
         perform(MockMvcRequestBuilders.put(URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(updated)))
+                .content(JsonUtil.writeValue(updatedTo)))
                 .andDo(print())
-                .andExpect(status().isOk());
-        MATCHER.assertMatch(repository.findById(USER_ID).orElseThrow(), updated);
+                .andExpect(status().isNoContent());
+        MATCHER.assertMatch(repository.findById(USER_ID).orElseThrow(), UserUtil.updateFromTo(new User(user), updatedTo));
     }
 }

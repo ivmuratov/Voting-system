@@ -10,13 +10,14 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+
+import static com.votingsystem.springboot.util.ValidationUtil.checkNotFoundWithId;
 
 @Slf4j
 @AllArgsConstructor
@@ -61,8 +62,7 @@ public class MenuItemController {
     @DeleteMapping("/{menuItemId}")
     @Secured(value = {"ROLE_ADMIN"})
     public void delete(@PathVariable int restaurantId, @PathVariable int menuItemId) {
-        ValidationUtil.checkNotFound(restaurantRepo, restaurantId);
-        ValidationUtil.checkNotFoundWithId(repository.delete(restaurantId, menuItemId) != 0, menuItemId);
+        checkNotFoundWithId(repository.delete(restaurantId, menuItemId) != 0, menuItemId);
         log.info("delete menu id={} by restaurant id={}", menuItemId, restaurantId);
     }
 
@@ -71,13 +71,13 @@ public class MenuItemController {
             description = "Allows you to update menu item the selected restaurant by restaurant id and menu item id"
     )
     @PutMapping("/{menuItemId}")
-    @Transactional
     @Secured(value = {"ROLE_ADMIN"})
     public void update(@Valid @RequestBody MenuItem menuItem, @PathVariable int restaurantId, @PathVariable int menuItemId) {
-        ValidationUtil.checkNotFound(restaurantRepo, restaurantId);
         ValidationUtil.assureIdConsistent(menuItem, menuItemId);
+        ValidationUtil.checkOwn(menuItem, repository, restaurantId, menuItemId);
+        menuItem.setRegistered(repository.get(restaurantId, menuItemId).orElseThrow().getRegistered());
         menuItem.setRestaurant(restaurantRepo.getById(restaurantId));
-        repository.save(menuItem);
+        checkNotFoundWithId(repository.save(menuItem), menuItem.id());
         log.info("update {} by restaurant id={}", menuItem, restaurantId);
     }
 
@@ -86,10 +86,8 @@ public class MenuItemController {
             description = "Allows you to create menu item the selected restaurant by restaurant id"
     )
     @PostMapping
-    @Transactional
     @Secured(value = {"ROLE_ADMIN"})
     public ResponseEntity<MenuItem> create(@Valid @RequestBody MenuItem menuItem, @PathVariable int restaurantId) {
-        ValidationUtil.checkNotFound(restaurantRepo, restaurantId);
         ValidationUtil.checkNew(menuItem);
         menuItem.setRestaurant(restaurantRepo.getById(restaurantId));
         MenuItem created = repository.save(menuItem);

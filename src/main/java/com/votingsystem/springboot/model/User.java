@@ -10,10 +10,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -23,7 +20,6 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @ToString(callSuper = true)
 @Entity
 @Table(name = "users")
@@ -36,22 +32,16 @@ public class User extends BaseEntity implements Serializable {
 
     @Schema(description = "Name user", example = "New user")
     @Column(name = "name")
-    @NotBlank
-    @Size(max = 40)
     private String name;
 
     @Schema(description = "Email user", example = "new.email@email.com")
     @Column(name = "email", nullable = false, unique = true)
-    @Email
-    @NotBlank
-    @Size(max = 100)
     private String email;
 
     @Schema(description = "Password user", example = "123456")
     @Column(name = "password")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JsonDeserialize(using = JsonDeserializers.PasswordDeserializer.class)
-    @Size(max = 256)
     @ToString.Exclude
     private String password;
 
@@ -64,6 +54,14 @@ public class User extends BaseEntity implements Serializable {
     @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Role> roles;
+
+    public User(User u) {
+        this(u.id, u.name, u.email, u.password, u.roles);
+    }
+
+    public User(Integer id, String name, String email, String password, Role role, Role... roles) {
+        this(id, name, email, password, EnumSet.of(role, roles));
+    }
 
     public User(Integer id, String name, String email, String password, Collection<Role> roles) {
         super(id);

@@ -95,16 +95,6 @@ public class RestaurantControllerTest extends AbstractControllerTest {
         MATCHER.assertMatch(updated, repository.findById(RESTAURANT_ID1).orElseThrow());
     }
 
-    @Test
-    @WithUserDetails(value = UserTestData.ADMIN_MAIL)
-    void getWithMenu() throws Exception {
-        perform(MockMvcRequestBuilders.get(URL + RESTAURANT_ID1 + "/with-menu"))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(WITH_MENU_MATCHER.contentJson(restaurant1));
-    }
-
     @Order(1)
     @Test
     @WithUserDetails(value = UserTestData.USER_MAIL)

@@ -1,9 +1,9 @@
 package com.votingsystem.springboot.web;
 
 import com.votingsystem.springboot.AuthUser;
-import com.votingsystem.springboot.model.Role;
 import com.votingsystem.springboot.model.User;
 import com.votingsystem.springboot.repository.UserRepository;
+import com.votingsystem.springboot.to.UserTo;
 import com.votingsystem.springboot.util.ValidationUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,7 +18,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.Set;
+
+import static com.votingsystem.springboot.config.WebSecurityConfig.PASSWORD_ENCODER;
+import static com.votingsystem.springboot.util.UserUtil.*;
 
 @Slf4j
 @AllArgsConstructor
@@ -45,9 +47,10 @@ public class AccountController {
             description = "Allows you to delete your account"
     )
     @DeleteMapping
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@AuthenticationPrincipal AuthUser authUser) {
-        log.info("delete {}", authUser);
         repository.deleteById(authUser.id());
+        log.info("delete {}", authUser);
     }
 
     @Operation(
@@ -56,15 +59,14 @@ public class AccountController {
     )
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<User> register(@Valid @RequestBody User user) {
-        log.info("register {}", user);
-        ValidationUtil.checkNew(user);
-        user.setRoles(Set.of(Role.USER));
-        user = repository.save(user);
+    public ResponseEntity<User> register(@Valid @RequestBody UserTo userTo) {
+        ValidationUtil.checkNew(userTo);
+        User newUser = prepareToAndSave(createNewFromTo(userTo), repository, PASSWORD_ENCODER);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/account")
                 .build().toUri();
-        return ResponseEntity.created(uriOfNewResource).body(user);
+        log.info("register {}", newUser);
+        return ResponseEntity.created(uriOfNewResource).body(newUser);
     }
 
     @Operation(
@@ -72,14 +74,14 @@ public class AccountController {
             description = "Allows you to update your account"
     )
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void update(@Valid @RequestBody User user, @AuthenticationPrincipal AuthUser authUser) {
-        log.info("update {} to {}", authUser, user);
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void update(@Valid @RequestBody UserTo userTo, @AuthenticationPrincipal AuthUser authUser) {
         User oldUser = authUser.getUser();
-        ValidationUtil.assureIdConsistent(user, oldUser.id());
-        user.setRoles(oldUser.getRoles());
-        if (user.getPassword() == null) {
-            user.setPassword(oldUser.getPassword());
+        ValidationUtil.assureIdConsistent(userTo, oldUser.id());
+        if (userTo.getPassword() == null) {
+            userTo.setPassword(oldUser.getPassword());
         }
-        repository.save(user);
+        prepareToAndSave(updateFromTo(oldUser, userTo), repository, PASSWORD_ENCODER);
+        log.info("update {} to {}", authUser, userTo);
     }
 }
