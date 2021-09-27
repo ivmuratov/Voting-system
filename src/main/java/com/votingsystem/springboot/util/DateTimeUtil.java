@@ -9,13 +9,13 @@ import java.time.ZoneId;
 
 @UtilityClass
 public class DateTimeUtil {
-    public static final LocalTime BORDER_TIME_FOR_CANCEL_OF_VOTING = LocalTime.of(10, 59, 59);
+    public static final LocalTime DEADLINE_FOR_VOTE_CHANGE = LocalTime.of(11, 0, 0);
 
     private static final ZoneId zoneId = ZoneId.systemDefault();
 
     private static Clock clock = Clock.systemDefaultZone();
 
-    public static LocalTime now() {
+    private static LocalTime now() {
         return LocalTime.now(getClock());
     }
 
@@ -32,7 +32,7 @@ public class DateTimeUtil {
         return clock;
     }
 
-    public static boolean isTimeToCancelVote() {
-        return now().compareTo(BORDER_TIME_FOR_CANCEL_OF_VOTING) < 0;
+    public static boolean isDeadlineForVoteChangeHasCome() {
+        return now().compareTo(DEADLINE_FOR_VOTE_CHANGE) >= 0;
     }
 }

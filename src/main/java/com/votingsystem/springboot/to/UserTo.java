@@ -12,6 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class UserTo extends BaseTo implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;

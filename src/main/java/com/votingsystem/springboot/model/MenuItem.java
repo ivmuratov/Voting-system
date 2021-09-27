@@ -11,21 +11,20 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @ToString(callSuper = true)
 @Entity
-@Table(name = "menu_item", uniqueConstraints = {@UniqueConstraint(columnNames = {"restaurant_id", "name"}, name = "menu_unique_name_idx")})
+@Table(name = "menu_item", uniqueConstraints = {@UniqueConstraint(columnNames = {"created", "name", "restaurant_id"}, name = "unique_menu_item_for_restaurant_per_day_idx")})
 public class MenuItem extends BaseEntity {
-    @Schema(description = "Date of registered", accessMode = Schema.AccessMode.READ_ONLY)
-    @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()")
+    @Schema(description = "Date of created", accessMode = Schema.AccessMode.READ_ONLY)
+    @Column(name = "created", nullable = false, columnDefinition = "date default now()")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @NotNull
-    private LocalDateTime registered = LocalDateTime.now();
+    private LocalDate created = LocalDate.now();
 
     @Schema(description = "Name menu item", example = "New menu item")
     @Column(name = "name", nullable = false)
@@ -42,7 +41,7 @@ public class MenuItem extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonBackReference(value = "menu")
+    @JsonBackReference
     @ToString.Exclude
     private Restaurant restaurant;
 

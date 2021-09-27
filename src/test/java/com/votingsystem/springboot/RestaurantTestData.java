@@ -1,21 +1,9 @@
 package com.votingsystem.springboot;
 
 import com.votingsystem.springboot.model.Restaurant;
-import com.votingsystem.springboot.model.Vote;
-
-import java.util.List;
-
-import static com.votingsystem.springboot.UserTestData.user;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class RestaurantTestData {
     public static final MatcherFactory.Matcher<Restaurant> MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Restaurant.class, "menu", "votes");
-    public static final MatcherFactory.Matcher<Restaurant> WITH_VOTES_MATCHER = MatcherFactory.usingAssertions(Restaurant.class,
-            (a, e) -> assertThat(a).usingRecursiveComparison()
-                    .ignoringFields("menu", "votes.restaurant", "votes.user").isEqualTo(e),
-            (a, e) -> {
-                throw new UnsupportedOperationException();
-            });
 
     public static final int RESTAURANT_ID1 = 1;
     public static final int RESTAURANT_ID2 = 2;
@@ -30,11 +18,5 @@ public class RestaurantTestData {
 
     public static Restaurant getUpdated() {
         return new Restaurant(RESTAURANT_ID1, "Update Restaurant 1");
-    }
-
-    public static Restaurant getVoted() {
-        Restaurant voted = restaurant1;
-        voted.setVotes(List.of(new Vote(1, user, restaurant1)));
-        return voted;
     }
 }

@@ -14,7 +14,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @ToString(callSuper = true)
 @Entity
 @Table(name = "restaurant")
@@ -25,17 +24,10 @@ public class Restaurant extends BaseEntity {
     @Size(max = 120)
     private String name;
 
-    @Schema(description = "Votes for the restaurant", accessMode = Schema.AccessMode.READ_ONLY)
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonManagedReference(value = "votes-restaurant")
-    @ToString.Exclude
-    private List<Vote> votes;
-
     @Schema(description = "Menu for the restaurant", accessMode = Schema.AccessMode.READ_ONLY)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonManagedReference(value = "menu")
+    @JsonManagedReference
     @ToString.Exclude
     private List<MenuItem> menu;
 

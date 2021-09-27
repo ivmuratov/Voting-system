@@ -39,7 +39,7 @@ public class User extends BaseEntity implements Serializable {
     private String email;
 
     @Schema(description = "Password user", example = "123456")
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JsonDeserialize(using = JsonDeserializers.PasswordDeserializer.class)
     @ToString.Exclude

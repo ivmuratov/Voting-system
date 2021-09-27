@@ -1,11 +1,11 @@
 package com.votingsystem.springboot.util;
 
 import com.votingsystem.springboot.HasId;
-import com.votingsystem.springboot.model.MenuItem;
-import com.votingsystem.springboot.repository.MenuItemRepository;
 import com.votingsystem.springboot.util.exception.IllegalRequestDataException;
 import com.votingsystem.springboot.util.exception.NotFoundException;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class ValidationUtil {
     public static void checkNew(HasId bean) {
         if (!bean.isNew()) {
@@ -31,14 +31,5 @@ public class ValidationUtil {
     public static <T> T checkNotFoundWithId(T object, int id) {
         checkNotFoundWithId(object != null, id);
         return object;
-    }
-
-    public static void checkOwn(MenuItem menuItem, MenuItemRepository r, int restaurantId, int menuItemId) {
-        MenuItem chooseMenuItem = r.findById(menuItemId)
-                .filter(item -> item.getRestaurant().getId() == restaurantId)
-                .orElse(null);
-        if (!menuItem.isNew() && chooseMenuItem == null) {
-            throw new IllegalRequestDataException("");
-        }
     }
 }

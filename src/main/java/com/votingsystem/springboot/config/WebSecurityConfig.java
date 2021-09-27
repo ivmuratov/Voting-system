@@ -1,11 +1,9 @@
 package com.votingsystem.springboot.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.votingsystem.springboot.AuthUser;
 import com.votingsystem.springboot.model.Role;
 import com.votingsystem.springboot.model.User;
 import com.votingsystem.springboot.repository.UserRepository;
-import com.votingsystem.springboot.util.JsonUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +20,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.annotation.PostConstruct;
 import java.util.Optional;
 
 @Configuration
@@ -34,13 +31,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public static final PasswordEncoder PASSWORD_ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     private final UserRepository repository;
-
-    private final ObjectMapper objectMapper;
-
-    @PostConstruct
-    void setMapper() {
-        JsonUtil.setObjectMapper(objectMapper);
-    }
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -64,6 +54,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/account/register").anonymous()
                 .antMatchers("/api/account").hasRole(Role.USER.name())
                 .antMatchers("/api/restaurants/**").hasRole(Role.USER.name())
+                .antMatchers("/api/votes/**").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
+                .antMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
                 .antMatchers("/api/**").hasRole(Role.ADMIN.name())
                 .and().httpBasic()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
